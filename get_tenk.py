@@ -8,7 +8,10 @@ from tqdm import tqdm
 
 text_elements = ['TextElement', 'TopSectionTitle', 'TitleElement']
 
-def get_records(cik):
+def get_records(ticker, cik = None):
+    if cik is None:
+        cik = get_CIK(ticker)
+
     endpoint = f"https://data.sec.gov/submissions/CIK{cik}.json"
 
     headers = {
@@ -44,13 +47,12 @@ def get_records(cik):
         'url': urls
     })
 
-    df_records.to_csv(f"data/records/{cik}.csv")
+    df_records.to_csv(f"data/records/{ticker}.csv")
 
-def tenktext(cik):
-    if os.path.exists(f"data/records/{cik}.csv"):
-        df_records = pd.read_csv(f"data/records/{cik}.csv")
-    else:
-        print(f"Records for {cik} not found, please run get_record() first")
+def tenktext(ticker):
+    if not os.path.exists(f"data/records/{ticker}.csv"):
+        get_records(ticker)
+    df_records = pd.read_csv(f"data/records/{ticker}.csv")
     
     accession_numbers = []
     filing_dates = []
@@ -79,7 +81,7 @@ def tenktext(cik):
         'text': contents
     })
 
-    df_filings.to_csv(f"data/filings/{cik}.csv", index = False)
+    df_filings.to_csv(f"data/filings/{ticker}.csv", index = False)
 
 if __name__ == "__main__":
     get_records("0000789019")
