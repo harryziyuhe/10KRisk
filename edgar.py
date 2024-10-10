@@ -17,12 +17,14 @@ if __name__ == "__main__":
     df_CIK['cik'] = df_CIK['cik'].astype(str).str.zfill(10)
 
     for ticker in ticker_list:
-        cik = df_CIK.loc[df_CIK['ticker'] == ticker.upper(), 'cik'].iloc[0]
-        if not os.path.exists(f"data/records/{cik}.csv"):
+        cik = get_CIK(ticker)
+        if cik is None:
+            continue
+        if not os.path.exists(f"data/records/{ticker}.csv"):
             print(f"Getting submission records for {ticker} with CIK {cik}")
-            get_records(cik)
-        if not os.path.exists(f"data/filings/{cik}.csv"):
+            get_records(ticker)
+        if not os.path.exists(f"data/filings/{ticker}.csv"):
             print(f"Getting 10-K contents for {ticker} with CIK {cik}")
-            tenktext(cik)
+            tenktext(ticker)
 
     
