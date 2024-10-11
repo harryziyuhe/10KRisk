@@ -58,7 +58,7 @@ def tenktext(ticker):
     filing_dates = []
     contents = []
 
-    dl = Downloader("UCSD", "zih028@ucsd.edu")
+    dl = Downloader("UCSD", "tpetrovicova@ucsd.edu")
 
     for _, row in tqdm(df_records.iterrows(), total=df_records.shape[0]):
         if row['form'] == "10-K":
@@ -80,8 +80,12 @@ def tenktext(ticker):
         'time': filing_dates,
         'text': contents
     })
-
     df_filings.to_csv(f"data/filings/{ticker}.csv", index = False)
 
 if __name__ == "__main__":
-    get_records("0000789019")
+    tickers = pd.read_csv("./ticker_list.txt")
+    tickers = tickers.columns.values
+    for t in tickers:
+        print(t)
+        get_records(ticker=t)
+        tenktext(ticker=t)
